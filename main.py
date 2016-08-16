@@ -1,26 +1,9 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'widget.ui'
-#
-# Created by: PyQt4 UI code generator 4.11.4
-#
-# WARNING! All changes made in this file will be lost!
-try:
-    from PyQt4.QtCore import QAbstractTableModel, Qt, QVariant, QModelIndex
-    from PyQt4.QtGui import (
-        QApplication, QDialog, QVBoxLayout, QTableView, QWidget)
-except ImportError:
-    from PySide.QtCore import QAbstractTableModel, Qt, QModelIndex
-    from PySide.QtGui import (
-        QApplication, QDialog, QVBoxLayout, QTableView, QWidget)
-    QVariant = lambda value=None: value
 
 import numpy as np
 import pandas as pd
 from PyQt4 import QtCore, QtGui
-#from pandas.sandbox.qtpandas import DataFrameModel, DataFrameWidget
+# from pandas.sandbox.qtpandas import DataFrameModel, DataFrameWidget
 import sys
-
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -37,7 +20,6 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_Swaps_creator(object):
-
     def setupUi(self, Swaps_creator):
         Swaps_creator.setObjectName(_fromUtf8("Swaps_creator"))
         Swaps_creator.resize(500, 500)
@@ -56,12 +38,20 @@ class Ui_Swaps_creator(object):
         self.zapisz.setGeometry(QtCore.QRect(150, 0, 150, 50))
         self.zapisz.setObjectName(_fromUtf8("zapisz"))
 
-        self.df1 = pd.DataFrame(np.random.randn(100, 3), columns=['foo', 'bar', 'baz'])
-        self.tabela_rates = QtGui.QTableWidget(self.df1)
+        self.df1 = pd.DataFrame(np.random.randn(20, 3), columns=['foo', 'bar', 'baz'])
+        self.tabela_rates = QtGui.QTableWidget(self.tab)
         self.tabela_rates.setGeometry(QtCore.QRect(0, 50, 500, 450))
         self.tabela_rates.setObjectName(_fromUtf8("tabela_rates"))
-        self.tabela_rates.setColumnCount(0)
-        self.tabela_rates.setRowCount(0)
+        self.tabela_rates.setColumnCount(len(self.df1.columns))
+        self.tabela_rates.setRowCount(len(self.df1.index))
+
+        self.col = range(len(self.df1.columns) - 1)
+        self.row = range(len(self.df1.index) - 1)
+
+        for i in self.col:
+            for j, stuff  in enumerate(self.row):
+                item = QtGui.QTableWidgetItem('self.df1.iat[i,j]')
+                self.tabela_rates.setItem(i, j, item)
 
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
@@ -102,7 +92,10 @@ if __name__ == "__main__":
     ui.setupUi(Swaps_creator)
     r1 = ui.get_annualized_rates('bid', 'basic')
     r2 = ui.get_annualized_rates('bid', 'standard')
-    print(r1,r2)
-    print(type(r1))
+    print(range(len(ui.df1.columns)-1))
+    print(range(len(ui.df1.index)-1))
+    print(type(range(len(ui.df1.columns))))
+    print(ui.df1.iloc[0,0])
+    print(type(enumerate(ui.row)))
     Swaps_creator.show()
     sys.exit(app.exec_())
