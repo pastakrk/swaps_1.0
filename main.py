@@ -1,9 +1,10 @@
-
+import sys
+import os
 import numpy as np
 import pandas as pd
 from PyQt4 import QtCore, QtGui
 # from pandas.sandbox.qtpandas import DataFrameModel, DataFrameWidget
-import sys
+
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -34,9 +35,13 @@ class Ui_Swaps_creator(object):
         self.otworz.setGeometry(QtCore.QRect(0, 0, 150, 50))
         self.otworz.setObjectName(_fromUtf8("otworz"))
 
+        self.otworz.clicked.connect(self.open_file)
+
         self.zapisz = QtGui.QPushButton(self.tab)
         self.zapisz.setGeometry(QtCore.QRect(150, 0, 150, 50))
         self.zapisz.setObjectName(_fromUtf8("zapisz"))
+
+        self.zapisz.clicked.connect(self.save_file)
 
         self.df1 = pd.DataFrame(np.random.randn(20, 3), columns=['foo', 'bar', 'baz'])
         self.tabela_rates = QtGui.QTableWidget(self.tab)
@@ -45,13 +50,14 @@ class Ui_Swaps_creator(object):
         self.tabela_rates.setColumnCount(len(self.df1.columns))
         self.tabela_rates.setRowCount(len(self.df1.index))
 
-        self.col = range(len(self.df1.columns) - 1)
-        self.row = range(len(self.df1.index) - 1)
+        self.col = range(len(self.df1.columns))
+        self.row = range(len(self.df1.index))
 
         for i in self.col:
-            for j, stuff  in enumerate(self.row):
-                item = QtGui.QTableWidgetItem('self.df1.iat[i,j]')
-                self.tabela_rates.setItem(i, j, item)
+            self.tabela_rates.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(self.df1.columns.values[i]))
+            for j in self.row:
+                item = QtGui.QTableWidgetItem(str(self.df1.iloc[j,i]))
+                self.tabela_rates.setItem(j, i, item)
 
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
@@ -68,6 +74,48 @@ class Ui_Swaps_creator(object):
         self.zapisz.setText(_translate("Swaps_creator", "Zapisz", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Swaps_creator", "tickery", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("Swaps_creator", "instrumenty", None))
+
+    def open_file(self):
+        path = QtGui.QFileDialog.getOpenFileName(None, 'Open CSV', os.getenv('HOME'), 'CSV(*.csv)')
+        print(path)
+        if path[0] != '':
+                self.my_file = pd.read_csv(path)
+                # csv.reader(csv_file, dialect='excel')
+
+                self.col = range(len(self.my_file.columns))
+                self.row = range(len(self.my_file.index))
+
+                for i in self.col:
+                    self.tabela_rates.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(self.my_file.columns.values[i]))
+                    for j in self.row:
+                        item = QtGui.QTableWidgetItem(str(self.my_file.iloc[j, i]))
+                        self.tabela_rates.setItem(j, i, item)
+
+
+    def save_file(self):
+
+        path = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
+        if path[0] != '':
+            tabela_rates.to_csv(path)
+            self.col = range(len(self.my_file.columns))
+            self.row = range(len(self.my_file.index))
+
+            new_file = pd.DataFrame(np.random)
+
+            # for i in self.col:
+            #     save_file = [][]
+            #     for i in self.col
+
+
+
+
+            #     for i in self.col:
+            #         item = self.item(row, col)
+            #         if item is not None:
+            #             row_data.append(item.text())
+            #         else:
+            #             row_data.append('')
+            #     writer.writerow(row_data)
 
     def get_data(self, f, c):
         ticker_list = pd.read_csv(f)
@@ -92,10 +140,11 @@ if __name__ == "__main__":
     ui.setupUi(Swaps_creator)
     r1 = ui.get_annualized_rates('bid', 'basic')
     r2 = ui.get_annualized_rates('bid', 'standard')
-    print(range(len(ui.df1.columns)-1))
-    print(range(len(ui.df1.index)-1))
+    print(range(len(ui.df1.columns)))
+    print(range(len(ui.df1.index)))
     print(type(range(len(ui.df1.columns))))
     print(ui.df1.iloc[0,0])
-    print(type(enumerate(ui.row)))
+    print(type(ui.tabela_rates))
+    print(ui.df1.columns.values[1])
     Swaps_creator.show()
     sys.exit(app.exec_())
