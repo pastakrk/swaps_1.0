@@ -1,5 +1,6 @@
 import sys
 import os
+import csv
 import numpy as np
 import pandas as pd
 from PyQt4 import QtCore, QtGui
@@ -91,23 +92,44 @@ class Ui_Swaps_creator(object):
                         item = QtGui.QTableWidgetItem(str(self.my_file.iloc[j, i]))
                         self.tabela_rates.setItem(j, i, item)
 
-
     def save_file(self):
-
+        # path = QtGui.QFileDialog.getSaveFileName(none, 'Save File', '', 'CSV(*.csv)')
         path = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
-        if path[0] != '':
-            tabela_rates.to_csv(path)
-            self.col = range(len(self.my_file.columns))
-            self.row = range(len(self.my_file.index))
 
-            new_file = pd.DataFrame(np.random)
+        if not path.isEmpty():
+            with open(unicode(path), 'wb') as stream:
+                writer = csv.writer(path)
+                self.col = range(len(self.my_file.columns))
+                self.row = range(len(self.my_file.index))
 
-            # for i in self.col:
-            #     save_file = [][]
-            #     for i in self.col
+                for i in self.row:
+                    new_file = []
+                    for j in self.col:
+                        item = self.table.item(i, j)
+                        if item is not None:
+                            new_file.append(
+                            unicode(item.text()).encode('utf8'))
+                        else:
+                            new_file.append('')
+                    writer.writerow(new_file)
 
 
-
+    # def save_file(self):
+    #
+    #     path = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
+    #     if path[0] != '':
+    #         tabela_rates.to_csv(path)
+    #         self.col = range(len(self.my_file.columns))
+    #         self.row = range(len(self.my_file.index))
+    #
+    #         new_file = [][]
+    #
+    #         # for i in self.col:
+    #         #     save_file = [][]
+    #         #     for i in self.col
+    #
+    #
+    #
 
             #     for i in self.col:
             #         item = self.item(row, col)
