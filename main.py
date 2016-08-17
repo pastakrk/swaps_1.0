@@ -4,8 +4,6 @@ import csv
 import numpy as np
 import pandas as pd
 from PyQt4 import QtCore, QtGui
-# from pandas.sandbox.qtpandas import DataFrameModel, DataFrameWidget
-
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -31,6 +29,7 @@ class Ui_Swaps_creator(object):
 
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
+        self.tabWidget.addTab(self.tab, _fromUtf8(""))
 
         self.otworz = QtGui.QPushButton(self.tab)
         self.otworz.setGeometry(QtCore.QRect(0, 0, 150, 50))
@@ -44,7 +43,7 @@ class Ui_Swaps_creator(object):
 
         self.zapisz.clicked.connect(self.save_file)
 
-        self.df1 = pd.DataFrame(np.random.randn(20, 3), columns=['foo', 'bar', 'baz'])
+        self.df1 = pd.DataFrame(np.random.randn(20, 3), columns=['a', 'b', 'c'])
         self.tabela_rates = QtGui.QTableWidget(self.tab)
         self.tabela_rates.setGeometry(QtCore.QRect(0, 50, 500, 450))
         self.tabela_rates.setObjectName(_fromUtf8("tabela_rates"))
@@ -60,10 +59,27 @@ class Ui_Swaps_creator(object):
                 item = QtGui.QTableWidgetItem(str(self.df1.iloc[j,i]))
                 self.tabela_rates.setItem(j, i, item)
 
-        self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
+
+        self.otworz2 = QtGui.QPushButton(self.tab_2)
+        self.otworz2.setGeometry(QtCore.QRect(0, 0, 150, 50))
+        self.otworz2.setObjectName(_fromUtf8("otworz"))
+
+        self.otworz2.clicked.connect(self.open_file)
+
+        self.zapisz2 = QtGui.QPushButton(self.tab_2)
+        self.zapisz2.setGeometry(QtCore.QRect(150, 0, 150, 50))
+        self.zapisz2.setObjectName(_fromUtf8("zapisz"))
+
+        self.zapisz2.clicked.connect(self.save_file)
+
+        self.tabela_rates = QtGui.QTableWidget(self.tab_2)
+        self.tabela_rates.setGeometry(QtCore.QRect(0, 50, 500, 450))
+        self.tabela_rates.setObjectName(_fromUtf8("tabela_rates"))
+        self.tabela_rates.setColumnCount(len(self.df1.columns))
+        self.tabela_rates.setRowCount(len(self.df1.index))
 
         self.retranslateUi(Swaps_creator)
         self.tabWidget.setCurrentIndex(0)
@@ -73,6 +89,8 @@ class Ui_Swaps_creator(object):
         Swaps_creator.setWindowTitle(_translate("Swaps_creator", "Swaps_creator", None))
         self.otworz.setText(_translate("Swaps_creator", "Otwórz", None))
         self.zapisz.setText(_translate("Swaps_creator", "Zapisz", None))
+        self.otworz2.setText(_translate("Swaps_creator", "Otwórz", None))
+        self.zapisz2.setText(_translate("Swaps_creator", "Zapisz", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Swaps_creator", "tickery", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("Swaps_creator", "instrumenty", None))
 
@@ -81,7 +99,6 @@ class Ui_Swaps_creator(object):
         print(path)
         if path[0] != '':
                 self.my_file = pd.read_csv(path)
-                # csv.reader(csv_file, dialect='excel')
 
                 self.col = range(len(self.my_file.columns))
                 self.row = range(len(self.my_file.index))
@@ -91,53 +108,24 @@ class Ui_Swaps_creator(object):
                     for j in self.row:
                         item = QtGui.QTableWidgetItem(str(self.my_file.iloc[j, i]))
                         self.tabela_rates.setItem(j, i, item)
+        pass
 
     def save_file(self):
-        # path = QtGui.QFileDialog.getSaveFileName(none, 'Save File', '', 'CSV(*.csv)')
         path = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
 
-        if not path.isEmpty():
-            with open(unicode(path), 'wb') as stream:
-                writer = csv.writer(path)
-                self.col = range(len(self.my_file.columns))
-                self.row = range(len(self.my_file.index))
+        if path[0] != '':
+            with open(path, 'w') as stream:
+                writer = csv.writer(stream, dialect='excel')
 
                 for i in self.row:
                     new_file = []
                     for j in self.col:
-                        item = self.table.item(i, j)
+                        item = self.tabela_rates.item(i, j)
                         if item is not None:
-                            new_file.append(
-                            unicode(item.text()).encode('utf8'))
+                            new_file.append(item.text())
                         else:
                             new_file.append('')
                     writer.writerow(new_file)
-
-
-    # def save_file(self):
-    #
-    #     path = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
-    #     if path[0] != '':
-    #         tabela_rates.to_csv(path)
-    #         self.col = range(len(self.my_file.columns))
-    #         self.row = range(len(self.my_file.index))
-    #
-    #         new_file = [][]
-    #
-    #         # for i in self.col:
-    #         #     save_file = [][]
-    #         #     for i in self.col
-    #
-    #
-    #
-
-            #     for i in self.col:
-            #         item = self.item(row, col)
-            #         if item is not None:
-            #             row_data.append(item.text())
-            #         else:
-            #             row_data.append('')
-            #     writer.writerow(row_data)
 
     def get_data(self, f, c):
         ticker_list = pd.read_csv(f)
@@ -162,11 +150,11 @@ if __name__ == "__main__":
     ui.setupUi(Swaps_creator)
     r1 = ui.get_annualized_rates('bid', 'basic')
     r2 = ui.get_annualized_rates('bid', 'standard')
-    print(range(len(ui.df1.columns)))
-    print(range(len(ui.df1.index)))
-    print(type(range(len(ui.df1.columns))))
-    print(ui.df1.iloc[0,0])
-    print(type(ui.tabela_rates))
-    print(ui.df1.columns.values[1])
+    # print(range(len(ui.df1.columns)))
+    # print(range(len(ui.df1.index)))
+    # print(type(range(len(ui.df1.columns))))
+    # print(ui.df1.iloc[0,0])
+    # print(type(ui.tabela_rates))
+    # print(ui.df1.columns.values[1])
     Swaps_creator.show()
     sys.exit(app.exec_())
