@@ -19,7 +19,7 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_Swaps_creator(object):
+class view(object):
     def setupUi(self, Swaps_creator):
         Swaps_creator.setObjectName(_fromUtf8("Swaps_creator"))
         Swaps_creator.resize(500, 500)
@@ -108,7 +108,6 @@ class Ui_Swaps_creator(object):
                     for j in self.row:
                         item = QtGui.QTableWidgetItem(str(self.my_file.iloc[j, i]))
                         self.tabela_rates.setItem(j, i, item)
-        pass
 
     def save_file(self):
         path = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
@@ -127,29 +126,54 @@ class Ui_Swaps_creator(object):
                             new_file.append('')
                     writer.writerow(new_file)
 
-    def get_data(self, f, c):
-        ticker_list = pd.read_csv(f)
-        x = ticker_list[c].tolist()
-        return x
+# class model:
+#     def __init__(self):
 
-    def get_annualized_rates(self, side, offer):
-        if side == 'bid':
-            rates_table = self.get_data('markup_list.csv', 'ticker')
-        else:
-            rates_table = self.get_data('markup_list.csv', 'ticker')
-        return rates_table
+    # def get_data(self, f, c):
+    #         ticker_list = pd.read_csv(f)
+    #         x = ticker_list[c].tolist()
+    #         return x
+    #
+    # def get_tickers(self, f, c, t):
+    #     if t == 0:
+    #         bid = con.ref(get_data(f, c), ['BID'])
+    #         ask = con.ref(get_data(f, c), ['ASK'])
+    #         base = con.ref(get_data(f, c), ['BASE_CRNCY'])
+    #         quote = con.ref(get_data(f, c), ['CRNCY'])
+    #         table1 = pd.merge(bid, ask, how='left', on=['ticker'])
+    #         table2 = pd.merge(table1, base, how='left', on=['ticker'])
+    #         final = pd.merge(table2, quote, how='left', on=['ticker'])
+    #         final.drop(['field_x', 'field_y'], axis=1, inplace=True)
+    #         final.drop_duplicates(['ticker'], keep='first', inplace=True)
+    #         final.columns = ['ticker', 'bid', 'ask', 'base_crncy', 'quote_crncy']
+    #     else:
+    #         px_last = con.ref(get_data(f, c), ['PX_LAST'])
+    #         base = con.ref(get_data(f, c), ['BASE_CRNCY'])
+    #         quote = con.ref(get_data(f, c), ['CRNCY'])
+    #         table1 = pd.merge(px_last, base, how='left', on=['ticker'])
+    #         final = pd.merge(table1, quote, how='left', on=['ticker'])
+    #         final.drop(['field_x', 'field_y', 'value_y', 'field'], axis=1, inplace=True)
+    #         final['quote_crncy'] = final['value']
+    #         final.columns = ['ticker', 'rates_px_last', 'base_crncy', 'quote_crncy']
+    #     return final
+    #
+    # def get_annualized_rates(self, side, offer):
+    #     if side == 'bid':
+    #         rates_table = get_tickers('markup_list.csv', 'ticker', 1)
+    #         rates_table['bid_rate'] = get_data('markup_list.csv', 'basic')
+    #     else:
+    #         rates_table = get_tickers('markup_list.csv', 'ticker', 1)
+    #         rates_table['ask_rate'] = get_data('markup_list.csv', 'basic')
+    #     return rates_table
 
-    def ticker_table(self):
-        self.df1 = pd.DataFrame(np.random.randn(100,3), columns=['foo', 'bar', 'baz'])
-        return self.df1
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Swaps_creator = QtGui.QWidget()
-    ui = Ui_Swaps_creator()
+    ui = view()
     ui.setupUi(Swaps_creator)
-    r1 = ui.get_annualized_rates('bid', 'basic')
-    r2 = ui.get_annualized_rates('bid', 'standard')
+    # r1 = ui.get_annualized_rates('bid', 'basic')
+    # r2 = ui.get_annualized_rates('bid', 'standard')
     # print(range(len(ui.df1.columns)))
     # print(range(len(ui.df1.index)))
     # print(type(range(len(ui.df1.columns))))
