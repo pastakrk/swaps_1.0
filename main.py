@@ -94,20 +94,37 @@ class view(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Swaps_creator", "tickery", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("Swaps_creator", "instrumenty", None))
 
+
+
+class model:
+    def __init__(self):
+        self.final_table = pd.read_csv('base_file2.csv', sep=";")
+    def get_annualized_rates(self, offer):
+            self.final_table['short'+'_'+offer] = self.final_table['ask'] * ((1 + self.final_table['quote_bid'] - self.final_table[offer] / 2) / 360) / (
+                (1 + self.final_table['base_ask'] + self.final_table[offer] / 2) / 360)
+            self.final_table['long'+'_'+offer] = self.final_table['bid'] * ((1 + self.final_table['quote_bid'] - self.final_table[offer] / 2) / 360) / (
+                (1 + self.final_table['base_ask'] + self.final_table[offer] / 2) / 360)
+            return self.final_table
+
+
+
+class controller
+    def __init__(self):
+
     def open_file(self):
         path = QtGui.QFileDialog.getOpenFileName(None, 'Open CSV', os.getenv('HOME'), 'CSV(*.csv)')
         print(path)
         if path[0] != '':
-                self.my_file = pd.read_csv(path)
+            self.my_file = pd.read_csv(path)
 
-                self.col = range(len(self.my_file.columns))
-                self.row = range(len(self.my_file.index))
+            self.col = range(len(self.my_file.columns))
+            self.row = range(len(self.my_file.index))
 
-                for i in self.col:
-                    self.tabela_rates.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(self.my_file.columns.values[i]))
-                    for j in self.row:
-                        item = QtGui.QTableWidgetItem(str(self.my_file.iloc[j, i]))
-                        self.tabela_rates.setItem(j, i, item)
+            for i in self.col:
+                self.tabela_rates.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(self.my_file.columns.values[i]))
+                for j in self.row:
+                    item = QtGui.QTableWidgetItem(str(self.my_file.iloc[j, i]))
+                    self.tabela_rates.setItem(j, i, item)
 
     def save_file(self):
         path = QtGui.QFileDialog.getSaveFileName(None, 'Save CSV', os.getenv('HOME'), 'CSV(*.csv)')
@@ -126,8 +143,15 @@ class view(object):
                             new_file.append('')
                     writer.writerow(new_file)
 
-# class model:
-#     def __init__(self):
+
+    # def get_annualized_rates(self, side, offer):
+    #     if side == 'bid':
+    #         rates_table = get_tickers('markup_list.csv', 'ticker', 1)
+    #         rates_table['bid_rate'] = get_data('markup_list.csv', 'basic')
+    #     else:
+    #         rates_table = get_tickers('markup_list.csv', 'ticker', 1)
+    #         rates_table['ask_rate'] = get_data('markup_list.csv', 'basic')
+    #     return rates_table
 
     # def get_data(self, f, c):
     #         ticker_list = pd.read_csv(f)
@@ -157,14 +181,14 @@ class view(object):
     #         final.columns = ['ticker', 'rates_px_last', 'base_crncy', 'quote_crncy']
     #     return final
     #
-    # def get_annualized_rates(self, side, offer):
-    #     if side == 'bid':
-    #         rates_table = get_tickers('markup_list.csv', 'ticker', 1)
-    #         rates_table['bid_rate'] = get_data('markup_list.csv', 'basic')
-    #     else:
-    #         rates_table = get_tickers('markup_list.csv', 'ticker', 1)
-    #         rates_table['ask_rate'] = get_data('markup_list.csv', 'basic')
-    #     return rates_table
+    def get_annualized_rates(self, side, offer):
+        if side == 'bid':
+            rates_table = get_tickers('markup_list.csv', 'ticker', 1)
+            rates_table['bid_rate'] = get_data('markup_list.csv', 'basic')
+        else:
+            rates_table = get_tickers('markup_list.csv', 'ticker', 1)
+            rates_table['ask_rate'] = get_data('markup_list.csv', 'basic')
+        return rates_table
 
 
 if __name__ == "__main__":

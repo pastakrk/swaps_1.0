@@ -26,7 +26,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -136,6 +136,18 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>checkBox_2</tabstop>
+  <tabstop>push_load</tabstop>
+  <tabstop>tableView_2</tabstop>
+  <tabstop>tableView</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>checkBox_4</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>checkBox_3</tabstop>
+  <tabstop>pushButton_2</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
